@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  namespace: dev
+  name: contacts-postgres
+spec:
+  serviceName: "postgres"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: contacts-postgres
+  template:
+    metadata:
+      labels:
+        app: contacts-postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:latest
+        envFrom:
+          - configMapRef:
+              name: contacts-postgres-config
+        ports:
+        - containerPort: 5432
+          name: postgredb
+        volumeMounts:
+        - name: account-volume
+          mountPath: /var/lib/postgresql/data
+          subPath: postgres
+      volumes:
+        - name: account-volume
+          persistentVolumeClaim:
+            claimName: contacts-disk

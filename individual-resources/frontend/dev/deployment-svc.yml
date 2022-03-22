@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: dev
+  name: front
+spec:
+  type: NodePort
+  ports:
+  - port: 443
+    targetPort: 80
+    protocol: TCP
+  selector:
+    app: front

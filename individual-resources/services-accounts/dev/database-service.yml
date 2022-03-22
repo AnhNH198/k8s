@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: account-database
+  namespace: dev
+spec:
+  loadBalancerIP: 20.44.210.149
+  ports:
+  - port: 5433
+    protocol: TCP
+    targetPort: 5432
+  selector:
+    app: accounts-postgres
+  type: LoadBalancer

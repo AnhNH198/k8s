@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dev-service-account-deployment
+  namespace: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-account
+  template:
+    metadata:
+      labels:
+        app: service-account
+    spec:
+      containers:
+      - name: service-account
+        resources:
+          requests:
+            cpu: 500m
+            memory: 0.3Gi
+          limits:
+            cpu: 600m
+            memory: 0.5Gi
+        image: azure.azurecr.io/accounts:20210504.0.0.1-a8c43227f2af122715e4e98e4987b1ca4b41f3b8-khanh-dev
+        envFrom:
+          - configMapRef:
+              name: accounts-postgres-config
+        ports:
+        - name: nodejs-port
+          containerPort: 8001
+      imagePullSecrets:
+        - name: acr-auth

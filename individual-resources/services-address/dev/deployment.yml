@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dev-service-address-deployment
+  namespace: dev
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: service-address
+  template:
+    metadata:
+      labels:
+        app: service-address
+    spec:
+      containers:
+      - name: service-address
+        resources:
+          requests:
+            cpu: 300m
+            memory: 0.2Gi
+          limits:
+            cpu: 600m
+            memory: 0.5Gi
+        image: azure.azurecr.io/service-address:20210429.0.0.3-44e8d9e875bcf56a796a4f6ba68351de7ad324e3-khanh-dev
+        ports:
+        - name: backend-port
+          containerPort: 8000
+      imagePullSecrets:
+        - name: acr-auth

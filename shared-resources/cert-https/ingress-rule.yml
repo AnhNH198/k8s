@@ -1,0 +1,44 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  namespace: dev
+  name: guestbook-letsencrypt-staging
+  annotations:
+      kubernetes.io/ingress.class: azure/application-gateway
+      cert-manager.io/cluster-issuer: letsencrypt-staging
+      cert-manager.io/acme-challenge-type: http01
+spec:
+  tls:
+  - hosts:
+    - web.azerp.xyz
+    - api.azerp.xyz
+    secretName: guestbook-secret-name
+  rules:
+  - host: web.azerp.xyz
+    http:
+      paths:
+      - backend:
+          serviceName: front
+          servicePort: 443
+        path: /(.*)
+      - backend:
+          serviceName: service-account
+          servicePort: 80
+        path: /(accounts.*)
+        
+  - host: api.azerp.xyz
+    http:
+      paths:
+      - backend:
+          serviceName: service-account
+          servicePort: 80
+        path: /(accounts.*)
+
+      - backend:
+          serviceName: service-contact
+          servicePort: 80
+        path: /(contacts.*)
+
+
+
+    

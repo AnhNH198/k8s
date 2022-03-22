@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dev-service-account-neo4j
+  namespace: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-account-neo4j
+  template:
+    metadata:
+      labels:
+        app: service-account-neo4j
+    spec:
+      containers:
+      - name: service-account-neo4j
+        resources:
+          requests:
+            cpu: 500m
+            memory: 0.3Gi
+          limits:
+            cpu: 600m
+            memory: 0.5Gi
+        image: boploi/test:5
+        envFrom:
+          - configMapRef:
+              name: accounts-neo4j-config
+        ports:
+        - name: account-neo4j
+          containerPort: 8000
+      imagePullSecrets:
+        - name: acr-auth

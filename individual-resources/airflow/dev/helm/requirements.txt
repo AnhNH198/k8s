@@ -1,0 +1,6 @@
+apache-airflow
+requests
+Twisted==21.2.0
+Scrapy==2.5.0
+azure-storage-blob==12.8.1
+psycopg2-binary

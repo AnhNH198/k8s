@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dev-service-contact-deployment
+  namespace: dev
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: service-contact
+  template:
+    metadata:
+      labels:
+        app: service-contact
+    spec:
+      containers:
+      - name: service-contact
+        resources:
+          requests:
+            cpu: 300m
+            memory: 0.2Gi
+          limits:
+            cpu: 600m
+            memory: 0.5Gi
+        image: azure.azurecr.io/service-contact:20210427.0.0.1-c6b8476ff1163e324928b391b5823af85eef9444-merge_app
+        envFrom:
+          - configMapRef:
+              name: contacts-postgres-config
+        ports:
+        - name: backend-port
+          containerPort: 8002
+      imagePullSecrets:
+        - name: acr-auth

@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dev-front-deployment
+  namespace: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: front
+  template:
+    metadata:
+      labels:
+        app: front
+    spec:
+      containers:
+      - name: front
+        resources:
+          requests:
+            cpu: 300m
+            memory: 0.3Gi
+          limits:
+            cpu: 600m
+            memory: 0.5Gi
+        image: azure.azurecr.io/frontend:20210427.1-d4810caa8c764ddb8f7f2ac1826441cb0d0eab2c-master
+        envFrom:
+          - configMapRef:
+              name: front-config
+        ports:
+        - name: nodejs-port
+          containerPort: 80
+      imagePullSecrets:
+        - name: acr-auth

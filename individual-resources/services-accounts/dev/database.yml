@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  namespace: dev
+  name: accounts-postgres
+spec:
+  serviceName: "postgres"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: accounts-postgres
+  template:
+    metadata:
+      labels:
+        app: accounts-postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:latest
+        env:
+          - name: ENV_SETTINGS
+            value: production
+        envFrom:
+          - configMapRef:
+              name: accounts-postgres-config
+        ports:
+        - containerPort: 5432
+          name: postgredb
+        volumeMounts:
+        - name: account-volume
+          mountPath: /var/lib/postgresql/data
+          subPath: postgres
+      volumes:
+        - name: account-volume
+          persistentVolumeClaim:
+            claimName: azure-managed-disk
